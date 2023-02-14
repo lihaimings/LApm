@@ -1,0 +1,53 @@
+apply plugin: 'groovy'  //必须
+apply plugin: 'maven-publish'
+
+dependencies {
+    implementation gradleApi() //必须
+    implementation localGroovy() //必须
+    //如果要使用android的API，需要引用这个，实现Transform的时候会用到
+    implementation 'com.android.tools.build:gradle:3.3.0'
+    implementation 'org.ow2.asm:asm:7.1'
+    implementation 'org.ow2.asm:asm-commons:7.1'
+
+}
+
+repositories {
+    google()
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+    maven { setUrl("https://artifact.bytedance.com/repository/byteX/") }
+}
+
+def localDefaultRepo = "file://" + new File(System.getProperty("user.home"), '.m2/repository').absolutePath
+
+//afterEvaluate {
+publishing {
+
+    publications {
+
+        maven(MavenPublication) {
+//                from components.release
+            from components.java
+            groupId = 'com.opt'
+            artifactId = 'imageplugin'
+            version = '1.2.0'
+
+//            packaging = 'aar'
+        }
+
+    }
+    repositories {
+//        maven {
+//            url = uri(localDefaultRepo)
+//            allowInsecureProtocol = true
+//        }
+//        it.mavenLocal()
+//
+        it.maven {
+            allowInsecureProtocol = true
+            url "${rootDir}/repo"
+        }
+    }
+}
+//}

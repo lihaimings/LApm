@@ -1,0 +1,127 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// ext也可以写在config.gradle
+apply from: "config.gradle"
+
+buildscript {
+
+    ext.MATRIX_VERSION = "2.0.8"
+
+    // ext可以直接写在这里
+    ext {
+        local = "Hello From build.gradle"
+    }
+
+
+    // 这个仓库是给下面dependencies依赖用的
+    repositories {
+        // 依赖仓库
+        google()
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url './repo'
+        }
+    }
+
+    dependencies {
+
+        classpath "com.android.tools.build:gradle:7.0.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
+
+        classpath("com.tencent.matrix:matrix-gradle-plugin:2.0.8") { changing = true }
+
+//        classpath "com.bytedance.android.byteX:base-plugin:0.3.0"
+//        classpath "com.bytedance.android.byteX:common:0.3.0"
+
+//        classpath 'com.novoda:bintray-release:1.2.3'
+
+        classpath "com.opt:imageplugin:1.1.0"
+
+
+    }
+
+}
+
+// 这个依赖是给模块的build.gradle用的
+allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        google()
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {
+            url 'https://artifact.bytedance.com/repository/Volcengine/'
+        }
+        maven {
+            url './repo'
+        }
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/jcente" }
+        maven { url 'https://jitpack.io' }
+    }
+
+}
+
+// 任务
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+task printProperties {
+    // 通过ext定义的变量
+    println local
+    // 通过
+    println propertiesFile
+}
+
+// 初始化阶段，配置阶段，执行阶段
+task hello {
+    println '你好，世界'
+    doFirst {
+        println '首先执行'
+    }
+    doFirst {
+        // 执行命令行
+        exec {
+            executable = 'adb'
+            args('shell','am','start','-n','com.opt.lapm/com.opt.lapm.MainActivity')
+        }
+    }
+
+
+    doLast {
+        println '后面执行'
+    }
+}
+
+task getReleasePassword {
+    def password = ''
+
+    doFirst {
+        if (rootProject.file("private.properties").exists()) {
+            Properties properties = new Properties()
+            properties.load(rootProject.file("private.properties").newDataInputStream())
+            password = properties.getProperty("release.password")
+            println password
+        }
+
+        if (!password?.trim()) {
+            password = new String(System.console().readPassword("what is password"))
+        }
+
+        android.signingConfigs.release.storePassword = password
+        android.signingConfigs.release.keyPassword = password
+
+    }
+
+}
+
+tasks.whenTaskAdded { theTask ->
+    if (theTask.name.equals("packageRelease")) {
+        theTask.dependsOn "getReleasePassword"
+    }
+}
+
+

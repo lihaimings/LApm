@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.opt.lib_version'
+}
+
+android {
+
+    // 编译应用的SDK版本
+    compileSdk BuildConfig.compileSdkVersion
+
+    defaultConfig {
+        minSdk BuildConfig.minSdkVersion
+        targetSdk BuildConfig.targetSdkVersion
+        versionCode BuildConfig.versionCode
+        versionName BuildConfig.versionName
+
+//        flavorDimensions "color", "price"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // 生产环境
+    buildTypes {
+        release {
+        }
+        publish {
+        }
+        debug {
+
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+
+}
+
+dependencies {
+    implementation AndroidX.coreKtx
+    implementation AndroidX.appcompat
+    implementation Google.material
+    implementation AndroidX.constraintlayout
+}
+

@@ -1,0 +1,9 @@
+
+rootProject.name = "LApm"
+
+// 说明哪些模块应该被构建
+include ':app'
+include ':apm'
+includeBuild("lib_version")
+include ':imagePlugin'
+include ':android-startup'

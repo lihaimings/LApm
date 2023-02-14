@@ -1,0 +1,69 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.opt",
+    "module": "imageplugin",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.0.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "imageplugin-1.0.0.jar",
+          "url": "imageplugin-1.0.0.jar",
+          "size": 3438,
+          "sha512": "4472ab2e178f70f24bf305ab6d17232685e73b9297480c61097590b4410ec6da89115b6b4cf0283d5da68619157a5b08d3ae15dddf6984fa0d6c77766a6ee889",
+          "sha256": "79b11670ba7c5f57ba273f10c5d8df86d936188d1720fe7ea8e151e4846255cf",
+          "sha1": "51e3b80356224b2c487b27f6da0dfadc2ae7c0d3",
+          "md5": "1a2f045386fa42a723a8bdd3628ec0d9"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.android.tools.build",
+          "module": "gradle",
+          "version": {
+            "requires": "3.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "imageplugin-1.0.0.jar",
+          "url": "imageplugin-1.0.0.jar",
+          "size": 3438,
+          "sha512": "4472ab2e178f70f24bf305ab6d17232685e73b9297480c61097590b4410ec6da89115b6b4cf0283d5da68619157a5b08d3ae15dddf6984fa0d6c77766a6ee889",
+          "sha256": "79b11670ba7c5f57ba273f10c5d8df86d936188d1720fe7ea8e151e4846255cf",
+          "sha1": "51e3b80356224b2c487b27f6da0dfadc2ae7c0d3",
+          "md5": "1a2f045386fa42a723a8bdd3628ec0d9"
+        }
+      ]
+    }
+  ]
+}

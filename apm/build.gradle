@@ -1,0 +1,58 @@
+plugins {
+    // 子模块要用这个插件
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.opt.lib_version'
+}
+
+
+android {
+    compileSdk BuildConfig.compileSdkVersion
+
+    defaultConfig {
+        minSdk BuildConfig.minSdkVersion
+        targetSdk BuildConfig.targetSdkVersion
+        versionCode BuildConfig.versionCode
+        versionName BuildConfig.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "url", '"http://release"'
+            resValue "string", "h5url", "http://release"
+        }
+        publish {
+            minifyEnabled false
+            buildConfigField "String", "url", '"http://publish"'
+            resValue "string", "h5url", "http://publish"
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "url", '"http://debug"'
+            resValue "string", "h5url", "http://debug"
+        }
+        staging {
+            buildConfigField "String", "API_URL", '"https://staging"'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation AndroidX.coreKtx
+    implementation AndroidX.appcompat
+    implementation Google.material
+    implementation Square.sharkAndroid
+}

@@ -1,0 +1,255 @@
+plugins {
+    // 插件
+    id 'com.android.application'
+    id 'kotlin-android'
+
+    // 把依赖内容做成插件
+    id 'com.opt.lib_version'
+    id 'com.opt.imageplugin'
+    id 'com.opt.projectplugin'
+}
+
+//apply plugin: MonitorPlugin
+
+//apply plugin: 'bytex'
+//ByteX {
+//    enable true
+//    enableInDebug true
+//    logLevel "DEBUG"
+//}
+
+// 解析keystore.propertie文件，里面配置签名的密码和文件
+def keystoreProperties = new Properties()
+keystoreProperties.load(rootProject.file("../keystore_lapm/keystore.properties").newDataInputStream())
+
+android {
+
+    // 编译应用的SDK版本
+    compileSdk BuildConfig.compileSdkVersion
+
+    defaultConfig {
+        applicationId BuildConfig.applicationId
+        minSdk BuildConfig.minSdkVersion
+        targetSdk BuildConfig.targetSdkVersion
+        versionCode BuildConfig.versionCode
+        versionName BuildConfig.versionName
+
+//        flavorDimensions "color", "price"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // 签名，要放到buildType前面
+    signingConfigs {
+        // publish分支用debug的签名，debug默认有签名
+        publish.initWith(signingConfigs.debug)
+
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
+    // 生产环境
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            buildConfigField "String", "url", '"http://release"'
+//            // 签名文件
+            signingConfig signingConfigs.release
+        }
+        publish {
+            initWith release
+//            buildConfigField "String", "url", '"http://publish"'
+            resValue "string", "h5url", "http://publish"
+//            signingConfig signingConfigs.publish
+        }
+        debug {
+            minifyEnabled false
+//            buildConfigField "String", "url", '"http://debug"'
+            resValue "string", "h5url", "http://debug"
+        }
+    }
+
+
+    // 不同的Flavors渠道
+//    productFlavors {
+//        red {
+////            applicationId 'com.opt.red'
+//            versionCode 3
+//            flavorDimensions "color"
+//        }
+//
+//        blue {
+////            applicationId 'com.opt.blue'
+//            versionCode 4
+//            flavorDimensions "color"
+//        }
+//
+//        free {
+//            flavorDimensions "price"
+//        }
+//
+//        paid {
+//            flavorDimensions "price"
+//        }
+//    }
+
+    // 挂钩
+    applicationVariants.all { variants ->
+        // debug/public/release
+        String variantName = variants.name
+        println("名字：variantName =" + versionName)
+
+        // 修改apk名字，通过transform后的outputs
+        variants.outputs.all { output ->
+            def file = output.outputFile
+            println "路径 ： $file"
+
+            def abiName = output.getFilter(com.android.build.OutputFile.ABI)
+            println "abi 名字 ： $abiName"
+
+            outputFileName = "LApm_${abiName}.apk"
+        }
+
+        // 启动安装
+        if (variants.install) {
+            tasks.create(name: "run${variants.name.capitalize()}",
+                    dependsOn: variants.install) {
+                description "Installs the ${variants.description} and runs the main launcher Activity"
+            }
+        }
+
+    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    //引入.so文件
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+
+}
+
+dependencies {
+
+    implementation AndroidX.coreKtx
+    implementation AndroidX.appcompat
+    implementation Google.material
+    implementation AndroidX.constraintlayout
+
+    //测试
+//    testImplementation 'junit:junit:4.+'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // 等价于： implementation "com.tencent.matrix:matrix-android-lib:2.0.8"
+    // 由三方面组成：group,name,version
+    implementation group: "com.tencent.matrix", name: "matrix-android-lib", version: MATRIX_VERSION, changing: true
+    implementation group: "com.tencent.matrix", name: "matrix-android-commons", version: MATRIX_VERSION, changing: true
+    implementation group: "com.tencent.matrix", name: "matrix-trace-canary", version: MATRIX_VERSION, changing: true
+
+    // 引入依赖模块
+    implementation project(":apm")
+    implementation project(":android-startup")
+
+    // 引入jar
+//    implementation file("libs/pinyin4j-2.5.0.jar")
+//    implementation(name: "libs/pinyin4j-2.5.0",ext:'jar')
+//    implementation fileTree("libs")
+//    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+
+    // 通过ext引入依赖
+    implementation rootProject.ext.dependencies["glide"]
+    implementation rootProject.ext.dependencies["picasso"]
+    implementation rootProject.ext.dependencies["fresco"]
+    implementation rootProject.ext.dependencies["image-loader"]
+    implementation rootProject.ext.dependencies["image-monitor"]
+
+//    debugImplementation Square.leakcanary
+
+}
+
+// groovy 语法
+def name = 'Andy'
+def greeting = "Hello ${name}"
+def name_size = "your name is ${name.length()} char long"
+
+// 创建一个类和变量
+class MyGroovyClass {
+    String greeting
+
+    String getGreeting() {
+        return "Hello"
+    }
+
+    def square(def num) {
+        num * num
+    }
+}
+
+def instance = new MyGroovyClass()
+instance.setGreeting("Hello , Grooy")
+instance.getGreeting()
+instance.square(4)
+
+println instance.greeting
+
+def square(def num) {
+    num * num
+}
+
+square(4)
+
+// closures
+def squareTwo = { num ->
+    num * num
+}
+squareTwo 5
+
+def squareThree = {
+    it * it
+}
+squareThree 5
+
+
+// 集合
+List list = [1, 2, 3, 4]
+list.forEach({
+
+})
+
+Map pizzaPrice = [one: 10, two: 12]
+pizzaPrice.get('two')
+pizzaPrice['two']
+pizzaPrice.two
+
+
+//class MonitorPlugin implements Plugin<Project>{
+//
+//    @Override
+//    void apply(Project project) {
+//
+//    }
+//}
+
+
+
+
+
