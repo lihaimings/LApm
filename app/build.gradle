@@ -19,8 +19,8 @@ plugins {
 //}
 
 // 解析keystore.propertie文件，里面配置签名的密码和文件
-def keystoreProperties = new Properties()
-keystoreProperties.load(rootProject.file("../keystore_lapm/keystore.properties").newDataInputStream())
+//def keystoreProperties = new Properties()
+//keystoreProperties.load(rootProject.file("../keystore_lapm/keystore.properties").newDataInputStream())
 
 android {
 
@@ -43,24 +43,24 @@ android {
         // publish分支用debug的签名，debug默认有签名
         publish.initWith(signingConfigs.debug)
 
-        release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-        }
+//        release {
+//            storeFile file(keystoreProperties['storeFile'])
+//            storePassword keystoreProperties['storePassword']
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//        }
     }
 
     // 生产环境
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            buildConfigField "String", "url", '"http://release"'
-//            // 签名文件
-            signingConfig signingConfigs.release
-        }
+//        release {
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+////            buildConfigField "String", "url", '"http://release"'
+////            // 签名文件
+//            signingConfig signingConfigs.release
+//        }
         publish {
             initWith release
 //            buildConfigField "String", "url", '"http://publish"'

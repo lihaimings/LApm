@@ -5,5 +5,4 @@ import android.app.Application
 class ActivityRefWatcher(val application: Application) {
 
 
-
 }
