@@ -25,6 +25,7 @@ import com.opt.lapm.sdk.SampleThirdStartup
 import java.io.File
 import kotlin.system.exitProcess
 import com.opt.android_startup.time.AppMethodBeat
+import com.opt.apm.memory.ActivityRefWatcher
 import com.opt.apm.memory.AppWatcher
 
 class ApmApplication : Application() {
@@ -49,8 +50,9 @@ class ApmApplication : Application() {
 //        IYourAutoBeeApm.plugins.add(BlockPlugin())
 //        IYourAutoBeeApm.startAllPlugins(this)
 
-        AppWatcher.install(this)
+//        AppWatcher.install(this)
 
+        ActivityRefWatcher(this).start()
         // 依赖加载框架
         val config = StartupConfig.Builder()
             .setLoggerLevel(LoggerLevel.DEBUG)
