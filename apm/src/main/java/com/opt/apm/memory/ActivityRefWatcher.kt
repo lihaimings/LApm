@@ -38,27 +38,6 @@ class ActivityRefWatcher(val application: Application?) {
         handler = HandlerThreadUtil.getDefaultHandler()
     }
 
-    private val removedActivityMonitor: ActivityLifecycleCallbacks =
-        object : EmptyActivityLifecycleCallback() {
-            override fun onActivityDestroyed(p0: Activity) {
-                // 弱引用Activity，并收集相关信息
-                pushDestroyedActivityInfo(p0)
-                // 2s 后开始触发gc
-                handler?.postDelayed({ triggerGc() }, delayTime)
-            }
-        }
-
-    /**
-     * 一分钟循环检查
-     */
-    private val scanDestroyedActivitiesTask: RetryableTaskExecutor.RetryableTask =
-        object : RetryableTaskExecutor.RetryableTask {
-
-            override fun execute(): RetryableTaskExecutor.RetryableTask.Status {
-                return checkDestroyedActivities()
-            }
-        }
-
     fun start() {
         stopDetect()
         application?.registerActivityLifecycleCallbacks(removedActivityMonitor)
@@ -66,8 +45,28 @@ class ActivityRefWatcher(val application: Application?) {
     }
 
     fun stop() {
-
+        stopDetect()
+        handler?.removeCallbacksAndMessages(null)
     }
+
+    private val removedActivityMonitor: ActivityLifecycleCallbacks =
+        object : EmptyActivityLifecycleCallback() {
+            override fun onActivityDestroyed(activity: Activity) {
+                // 弱引用Activity，并收集相关信息
+                pushDestroyedActivityInfo(activity)
+                // 2s 后开始触发gc
+                handler?.postDelayed({ triggerGc() }, delayTime)
+            }
+        }
+
+
+    private val scanDestroyedActivitiesTask: RetryableTaskExecutor.RetryableTask =
+        object : RetryableTaskExecutor.RetryableTask {
+
+            override fun execute(): RetryableTaskExecutor.RetryableTask.Status {
+                return checkDestroyedActivities()
+            }
+        }
 
     private fun scheduleDetectProcedure() {
         retryableTaskExecutor.executeInBackground(scanDestroyedActivitiesTask)
@@ -163,6 +162,8 @@ class ActivityRefWatcher(val application: Application?) {
 
     private fun dumpHeap() {
         handler?.post {
+
+
             val storageDirectory = File(application?.cacheDir, "leakactivity")
             if (!storageDirectory.exists()) {
                 storageDirectory.mkdir()
@@ -173,6 +174,7 @@ class ActivityRefWatcher(val application: Application?) {
             // dump 出堆转储文件
             Debug.dumpHprofData(file.absolutePath)
             Log.i(TAG, "dumpHeap: ${file.absolutePath}")
+
             // 使用 Shark 库里的 HeapAnalyzer 来分析
             val heapAnalyzer = HeapAnalyzer(OnAnalysisProgressListener { step ->
                 Log.i(TAG, "Analysis in progress, working on: ${step.name}")

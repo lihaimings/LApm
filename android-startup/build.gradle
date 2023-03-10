@@ -15,9 +15,6 @@ android {
         targetSdk BuildConfig.targetSdkVersion
         versionCode BuildConfig.versionCode
         versionName BuildConfig.versionName
-
-//        flavorDimensions "color", "price"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     // 生产环境

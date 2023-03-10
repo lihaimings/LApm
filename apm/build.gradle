@@ -55,4 +55,6 @@ dependencies {
     implementation AndroidX.appcompat
     implementation Google.material
     implementation Square.sharkAndroid
+
+//    debugImplementation "com.squareup.haha:haha:2.0.3"
 }

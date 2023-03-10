@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MemActivity" />
-        <activity android:name=".Mem2Activity"/>
+        <activity android:name=".Mem2Activity" />
+        <activity android:name=".ImageActivity" />
     </application>
 
 </manifest>

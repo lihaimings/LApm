@@ -75,8 +75,10 @@ public class TransformTest extends Transform {
                             ClassReader classReader = new ClassReader(new FileInputStream(file));
                             ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
 //                            ClassVisitor visitor = new TestClassVisitor(classWriter);
-                            ClassVisitor visitor = new StartUpClassVisitor(classWriter);
-                            classReader.accept(visitor, ClassReader.EXPAND_FRAMES);
+//                            ClassVisitor visitor = new StartUpClassVisitor(classWriter);
+                            ClassVisitor imageViewClassVisitor = new ImageViewClassVisitor(classWriter);
+//                            classReader.accept(visitor, ClassReader.EXPAND_FRAMES);
+                            classReader.accept(imageViewClassVisitor, ClassReader.EXPAND_FRAMES);
                             //通过toByteArray方法，将变更后信息转成byte数组
                             byte[] bytes = classWriter.toByteArray();
                             //放入输出流中往原文件中写入

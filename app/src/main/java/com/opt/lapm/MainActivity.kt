@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, MemActivity::class.java))
         }
 
+        // 大图检测
+//        dataBinding?.bigImgBtn?.setOnClickListener {
+//            startActivity(Intent(this, ImageActivity::class.java))
+//        }
+
 
         AppMethodBeat.at(this, false)
 
@@ -69,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             memoryInfoByDebug()
             memoryInfoByAdb()
         }, 3000)
+
 
     }
 

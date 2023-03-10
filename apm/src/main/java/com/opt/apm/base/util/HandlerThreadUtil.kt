@@ -52,32 +52,7 @@ object HandlerThreadUtil {
     }
 
     @JvmStatic
-    fun getNewHandlerThread(name: String?, priority: Int = Thread.NORM_PRIORITY): HandlerThread {
-        val i = handlerThreads.iterator()
-        while (i.hasNext()) {
-            val element = i.next()
-            if (!element.isAlive) {
-                i.remove()
-            }
-        }
-        val handlerThread = HandlerThread(name)
-        handlerThread.priority = priority
-        handlerThread.start()
-        handlerThreads.add(handlerThread)
-        return handlerThread
-    }
-
-
-    @JvmStatic
-    fun getDefaultHandler(): Handler? {
-        if (defaultHandler == null) {
-            defaultHandlerThread
-        }
-        return defaultHandler
-    }
-
-    @JvmStatic
-    fun getNewHandlerThread(name: String?, priority: Int): HandlerThread {
+    fun getNewHandlerThread(name: String?, priority: Int=Thread.NORM_PRIORITY): HandlerThread {
         val i = handlerThreads.iterator()
         while (i.hasNext()) {
             val element = i.next()

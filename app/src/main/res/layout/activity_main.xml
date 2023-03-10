@@ -26,6 +26,12 @@
             android:layout_height="50dp"
             android:text="内存泄漏测试" />
 
+<!--        <Button-->
+<!--            android:id="@+id/bigImgBtn"-->
+<!--            android:layout_width="250dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:text="大图检测" />-->
+
 
     </LinearLayout>
 </layout>
